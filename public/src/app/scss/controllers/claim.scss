@@ -1,0 +1,164 @@
+$primary-color: #99d9ff;
+
+.claim-form {
+  &__heading {
+    background-color: $primary-color !important;
+  }
+}
+.success-content {
+  background-color: $primary-color;
+}
+
+.plane-back {
+  background-image: url("../../../assets/global/svg/plane.svg");
+  background-repeat: no-repeat;
+  background-position: 140px 100%;
+}
+
+.progress-bar-wrapper {
+  $progress-done-color: #65b32e;
+  $progress-circle-color: #f1f2f2;
+  position: absolute;
+  top: 40px;
+  z-index: 100;
+  width: calc(100% - 30px);
+  background: #696d6f;
+  height: 5px;
+  box-shadow: 1px 0 1px 1px #e4e5e5;
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    top: -4px;
+    left: -1px;
+    width: 12px;
+    height: 12px;
+    background-color: $progress-circle-color;
+    border-radius: 12px;
+    z-index: 2;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    display: block;
+    top: -3px;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background-color: $progress-done-color;
+    transition: background-color .5s ease-in-out;
+    border-radius: 10px;
+    z-index: 3;
+  }
+
+  .progress-bar {
+    position: relative;
+    display: flex;
+    width: 10%;
+    height: 5px;
+    background-color: $progress-done-color;
+    transition: width .5s ease-in-out;
+    .percentage {
+      position: absolute;
+      right: -10px;
+      top: -22px;
+      color: $progress-done-color;
+    }
+  }
+
+  .primary-pass-wrapper {
+    position: relative;
+    left: 55%;
+    top: 5px;
+    .primary-pass {
+      position: absolute;
+      transition: color .5s ease-in-out;
+    }
+    &.is-active {
+      .primary-pass {
+        color: $progress-done-color;
+      }
+      &::after {
+        background-color: $progress-done-color;
+      }
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      display: block;
+      top: -9px;
+      left: 0;
+      width: 12px;
+      height: 12px;
+      background-color: $progress-circle-color;
+      border-radius: 12px;
+      z-index: 2;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      display: block;
+      top: -8px;
+      left: 1px;
+      width: 10px;
+      height: 10px;
+      background-color: #696d6f;
+      border-radius: 10px;
+      z-index: 3;
+    }
+  }
+
+  .sec-pass-wrapper {
+    position: relative;
+    left: 100%;
+    top: 5px;
+    .sec-pass {
+      position: absolute;
+      transition: color .5s ease-in-out;
+      @media (max-width: 540px) {
+        & {
+          visibility: hidden;
+        }
+      }
+    }
+    .finish {
+      position: absolute;
+      transition: color .5s ease-in-out;
+    }
+    &.is-active {
+      .sec-pass {
+        color: $progress-done-color;
+      }
+      .finish {
+        color: $progress-done-color;
+      }
+      &::after {
+        background-color: $progress-done-color;
+      }
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      display: block;
+      top: -9px;
+      left: -9px;
+      width: 12px;
+      height: 12px;
+      background-color: $progress-circle-color;
+      border-radius: 12px;
+      z-index: 2;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      display: block;
+      top: -8px;
+      left: -8px;
+      width: 10px;
+      height: 10px;
+      background-color: #696d6f;
+      border-radius: 10px;
+      z-index: 3;
+    }
+  }
+}

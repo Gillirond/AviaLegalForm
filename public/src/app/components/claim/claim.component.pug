@@ -1,3 +1,74 @@
-.container
-  .slider
-    .slider__item
+.container(style="position: relative;")
+  #claim-progress.progress-bar-wrapper
+    .progress-bar([style.width]="currentPercent + '%'")
+      .percentage {{currentPercent + '%'}}
+    .primary-pass-wrapper([class.is-active]="currentPercent >= primaryPassPercent")
+      .primary-pass(style="left: -116px;") Fill your information
+    .sec-pass-wrapper([class.is-active]="currentPercent == (primaryPassPercent + secPassPercent)")
+      .sec-pass(style="left: -210px;") Add more passengers
+      .finish(style="left: -40px;") Finish
+  .panel.panel-default(style="margin-top: 70px;")
+    .panel-heading.claim-form__heading
+      h3(*ngIf="stage === 1") Enter primary passenger's data:
+      h3(*ngIf="stage === 2") Enter secondary passengers' data (optional):
+    .panel-body.plane-back
+      form(name="primaryPassengerForm", *ngIf="stage === 1")
+        .form-group.has-feedback([class.has-success]="fullname.valid")
+          label.control-label(for="fullname") Full name:
+          input.form-control#fullname(type="text", name="fullname", placeholder="Enter full name:", [(ngModel)]="claimData.primaryPassenger.fullname", (ngModelChange)="countPercent();", required="", minlength="4", maxlength="100", #fullname="ngModel")
+          span.glyphicon.form-control-feedback([class.glyphicon-ok]="fullname.valid")
+        .form-group.has-feedback([class.has-success]="age.valid")
+          label.control-label(for="age") Age:
+          input.form-control#age(type="number", name="age", placeholder="Enter your age:", min="18", max="120", step="1", [(ngModel)]="claimData.primaryPassenger.age", (ngModelChange)="countPercent();", required="", pattern="18|19|[2-9][0-9]|1[01][0-9]|120", #age="ngModel")
+          span.glyphicon.form-control-feedback([class.glyphicon-ok]="age.valid")
+        .form-group.has-feedback([class.has-success]="email.valid")
+          label.control-label(for="email") Email:
+          input.form-control#email(type="email", name="email", placeholder="Enter your email:", [(ngModel)]="claimData.primaryPassenger.email", (ngModelChange)="countPercent();", required="", minlength="4", maxlength="100", email, #email="ngModel")
+          span.glyphicon.form-control-feedback([class.glyphicon-ok]="email.valid")
+        fieldset.form-group.panel.panel-default.panel-sm.fieldset
+          legend Address:
+          .panel-body
+            .form-group.has-feedback([class.has-success]="addressCountry.valid")
+              label.control-label(for="addressCountry") Country:
+              select.form-control#addressCountry(name="addressCountry", [disabled]="isLoading", placeholder="Select your country:", [(ngModel)]="claimData.primaryPassenger.address.country", (ngModelChange)="countPercent();", required="", #addressCountry="ngModel")
+                option(*ngFor="let country of settings.countries", [ngValue]="country.countryCode") {{country.name}}
+              span.glyphicon.form-control-feedback([class.glyphicon-ok]="addressCountry.valid", style="margin-right: 20px;")
+            .form-group.has-feedback([class.has-success]="addressStreet.valid")
+              label.control-label(for="addressStreet") Street:
+              input.form-control#addressStreet(type="text", name="addressStreet", placeholder="Enter street:", [(ngModel)]="claimData.primaryPassenger.address.street", (ngModelChange)="countPercent();", required="", minlength="5", maxlength="100", #addressStreet="ngModel")
+              span.glyphicon.form-control-feedback([class.glyphicon-ok]="addressStreet.valid")
+            .form-group.has-feedback([class.has-success]="addressIndex.valid")
+              label.control-label(for="addressIndex") Index/Zip:
+              input.form-control#addressIndex(type="text", name="addressIndex", placeholder="Enter index:", [(ngModel)]="claimData.primaryPassenger.address.index", (ngModelChange)="countPercent();", required="", minlength="3", maxlength="10", #addressIndex="ngModel")
+              span.glyphicon.form-control-feedback([class.glyphicon-ok]="addressIndex.valid")
+        .form-group.has-feedback([class.has-success]="phone.valid")
+          label.control-label(for="phone") Phone:
+          input.form-control#phone(type="tel", name="phone", placeholder="Enter your phone number:", [(ngModel)]="claimData.primaryPassenger.phone", (ngModelChange)="countPercent();", required="", pattern="(\\+[0-9]{1,3})?[0-9]{4,14}", #phone="ngModel")
+          span.glyphicon.form-control-feedback([class.glyphicon-ok]="phone.valid")
+        .form-group
+          button.btn.pull-right([disabled]="isLoading || fullname.invalid || age.invalid || email.invalid || addressCountry.invalid || addressStreet.invalid || addressIndex.invalid || phone.invalid", (click)="toStage(2);", [class.btn-success]="!(isLoading || fullname.invalid || age.invalid || email.invalid || addressCountry.invalid || addressStreet.invalid || addressIndex.invalid || phone.invalid)", [class.btn-default]="isLoading || fullname.invalid || age.invalid || email.invalid || addressCountry.invalid || addressStreet.invalid || addressIndex.invalid || phone.invalid") Continue
+          .clearfix
+      form#secondaryPassengersForm(#secondaryPassengersForm="ngForm", name="secondaryPassengersForm", *ngIf="stage === 2")
+        fieldset.panel.panel-default.panel-sm.fieldset(*ngFor="let passenger of claimData.additionalPassengers; let i = index")
+          legend {{'#' + (i+1)}}
+          .panel-body
+            .form-group.has-feedback([class.has-success]="fullname.valid")
+              label.control-label(for="{{'fullname' + i}}") Full name:
+              input.form-control(id="{{'fullname' + i}}", type="text", name="{{'fullname' + i}}", placeholder="Enter full name:", [(ngModel)]="passenger.fullname", (ngModelChange)="validateSecPassForm();countPercent();", required="", minlength="4", maxlength="100", #fullname="ngModel")
+              span.glyphicon.form-control-feedback([class.glyphicon-ok]="fullname.valid")
+            .form-group.has-feedback([class.has-success]="age.valid")
+              label.control-label(for="{{'age' + i}}") Age:
+              input.form-control(id="{{'age' + i}}", type="number", name="{{'age' + i}}", placeholder="Enter your age:", min="18", max="120", step="1", [(ngModel)]="passenger.age", (ngModelChange)="validateSecPassForm();countPercent();", required="", pattern="18|19|[2-9][0-9]|1[01][0-9]|120", #age="ngModel")
+              span.glyphicon.form-control-feedback([class.glyphicon-ok]="age.valid")
+        .form-group
+          button.btn.btn-success((click)="addPassenger();countPercent();", style="margin-right: 10px;")
+            span.glyphicon.glyphicon-plus
+          button.btn.btn-default(*ngIf="claimData.additionalPassengers.length > 0", (click)="popPassenger();countPercent();")
+            span.glyphicon.glyphicon-minus
+        .form-group
+          button.btn.btn-default.pull-left((click)="toStage(1)") Back to primary
+          button.btn.btn-success.pull-right([disabled]="isLoading || !secPassIsValid", (click)="submitClaim()") Submit
+          .clearfix
+
+
+
